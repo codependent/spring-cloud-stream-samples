@@ -17,12 +17,13 @@
 package kafka.e2e.customer.service
 
 import kafka.e2e.customer.Customer
+import reactor.core.publisher.Mono
 
 /**
  * @author José A. Íñigo
  */
 interface CustomerService {
 
-    fun save(customer: Customer)
+    fun save(customer: Customer): Mono<Unit>
 
 }

@@ -17,19 +17,21 @@
 package kafka.e2e.customer.service
 
 import kafka.e2e.customer.Customer
-import org.springframework.cloud.stream.messaging.Source
 import org.springframework.kafka.support.KafkaHeaders
+import org.springframework.messaging.Message
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
+import reactor.core.publisher.MonoProcessor
 
 /**
  * @author José A. Íñigo
  */
 @Service
-class CustomerServiceImpl(private val customerKafkaProducer: Source) : CustomerService {
+class CustomerServiceImpl(private val customerEmitter: MonoProcessor<Message<*>>) : CustomerService {
 
-    override fun save(customer: Customer) {
-        val message = MessageBuilder.withPayload(customer).setHeader(KafkaHeaders.MESSAGE_KEY, customer.getId()).build()
-        customerKafkaProducer.output().send(message)
+    override fun save(customer: Customer): Mono<Unit> {
+        customerEmitter.onNext(MessageBuilder.withPayload(customer).setHeader(KafkaHeaders.MESSAGE_KEY, customer.getId()).build())
+        return Mono.empty()
     }
 }

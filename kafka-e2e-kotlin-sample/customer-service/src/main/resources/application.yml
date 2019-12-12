@@ -3,11 +3,9 @@ spring:
     name: customer-service
   cloud:
     stream:
-#      schema-registry-client:
-#        endpoint: http://localhost:8081
       kafka:
         bindings:
-          output:
+          customer-out-0:
             producer:
               configuration:
                 key:
@@ -21,7 +19,7 @@ spring:
                   registry:
                     url: http://localhost:8081
       bindings:
-        output:
+        customer-out-0:
           destination: customer
           producer:
             useNativeEncoding: true
